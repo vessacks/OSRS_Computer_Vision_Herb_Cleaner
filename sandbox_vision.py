@@ -3,8 +3,6 @@ import cv2 as cv
 import numpy as np
 
 #test = cv.imread('C:\\Users\\Jeff C\\Downloads\\Code\\OpenCV files\\video processing attempt 2\\U.PNG')
-#note: if you call find on the same object more than once per loop, it starts to lower the confidence it returns. I have no idea why, it seems crazy, just don't do it. 
-
 
 class Vision:
 
@@ -12,17 +10,13 @@ class Vision:
     needle_img = None
     needle_w = 0
     needle_h = 0
-    method = cv.TM_CCOEFF_NORMED
-    imread = cv.IMREAD_GRAYSCALE
+    method = None
 
     # constructor
-    def __init__(self, needle_img_path, method=method, imread=imread):
-        #choose what method to read the image. this must match the imread method for haystack image calls
-        #options: cv.IMREAD_COLOR, cv.IMREAD_GRAYSCALE, cv.IMREAD_UNCHANGED
-        self.imread = imread        
+    def __init__(self, needle_img_path, method=method):
         # load the image we're trying to match
         # https://docs.opencv.org/4.2.0/d4/da8/group__imgcodecs.html
-        self.needle_img = cv.imread(needle_img_path, self.imread)
+        self.needle_img = cv.imread(needle_img_path, cv.IMREAD_COLOR)
 
         # Save the dimensions of the needle image
         self.needle_w = self.needle_img.shape[1]
@@ -30,9 +24,7 @@ class Vision:
 
         # There are 6 methods to choose from:
         # TM_CCOEFF, TM_CCOEFF_NORMED, TM_CCORR, TM_CCORR_NORMED, TM_SQDIFF, TM_SQDIFF_NORMED
-        self.method = method
-
-
+        self.method = cv.TM_CCOEFF_NORMED
 
     def find(self, haystack_img, threshold=0.5, debug_mode=None, return_mode = 'bestPoint'): #note: I added return_mode. it's not tested
         # run the OpenCV algorithm
@@ -104,8 +96,7 @@ class Vision:
             #cv.waitKey()
             #cv.imwrite('result_click_point.jpg', haystack_img)
 
-        #maxLoc yeilds the best point 
-        #ONLY WORKS FOR GRAYSCALE IMAGES CORRECTLLY CONVERTED FROM BGR OR RGB
+        #maxLoc yeilds the best point
         minVal, maxVal, minLoc, maxLoc = cv.minMaxLoc(result)
         bestPointCenter = [maxLoc[0]+ int(self.needle_w/2), maxLoc[1] + int(self.needle_h/2)] 
         bestPointTopLeft = [maxLoc[0],maxLoc[1]]
@@ -121,10 +112,6 @@ class Vision:
 
         if return_mode == 'confidence':
             return [bestPointTopLeft,maxVal]
-
-        if return_mode == 'allPoints + bestPoint + confidence':
-            return points, bestPointTopLeft,maxVal
         
     def hitboxDims(self): #gives the size of the identified hitbox
         return [self.needle_w, self.needle_h]
-

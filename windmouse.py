@@ -12,7 +12,7 @@ def wind_mouse(start_x, start_y, dest_x, dest_y, G_0=8, W_0=3, M_0=15, D_0=12, s
     W_0 - magnitude of the wind force fluctuations. default 3
     M_0 - maximum step size (velocity clip threshold). default 15
     D_0 - distance where wind behavior changes from random to damped. default 12
-    speed - ranges between 0 and 1. it describes the probability of not triggering a .02 second delay. I make speed.
+    speed - ranges between 0 and 1. it describes the probability of triggering a .02 second delay. I make speed.
     '''
     current_x,current_y = start_x,start_y
     v_x = v_y = W_x = W_y = 0

@@ -56,9 +56,9 @@ HERB_LOGOUT_TIMER = 20
 bank_entrance_threshold = .95#.9
 in_bank_threshold = .9 #.75
 clean_herb_threshold = .80 #.65
-dirty_bank_herb_threshold = .78 #.36
+dirty_bank_herb_threshold = .5 #.36
 bank_exit_threshold = .84#.6
-dirty_herb_threshold = .95#.6
+dirty_herb_threshold = .65#.6
 
 
 while True:
@@ -69,12 +69,12 @@ while True:
     #1 open bank
     #take a screenshot
     screenshot = wincap.get_screenshot()
-    screenshot = cv.cvtColor(screenshot, cv.COLOR_BGR2GRAY)
+    screenshot = cv.cvtColor(screenshot, cv.COLOR_RGB2GRAY)
 
     # get an updated image of the game and look for object of interest
     #bankWindow = bank_vision.find(screenshot, bank_entrance_threshold, debug_mode='rectangles')
-    bankWindowConfidence = bank_vision.find(screenshot, bank_entrance_threshold, debug_mode='rectangles', return_mode = 'confidence')
-    bankWindowAllPoints = bank_vision.find(screenshot, bank_entrance_threshold, debug_mode='rectangles', return_mode = 'allPoints')
+    bankWindowConfidence = bank_vision.find(screenshot, threshold = bank_entrance_threshold, debug_mode='rectangles', return_mode = 'confidence')
+    bankWindowAllPoints = bank_vision.find(screenshot, threshold = bank_entrance_threshold, debug_mode='rectangles', return_mode = 'allPoints')
     #check it found bank
     if bankWindowConfidence[1] < bank_entrance_threshold:
         print('bankWindow confidence = %s | DETECTION_THRESHOLD = %s | exiting...' %(bankWindowConfidence[1], bank_entrance_threshold))
@@ -90,9 +90,9 @@ while True:
     #2 check its in bank
     time.sleep(abs(np.random.normal(2,.02))) #need to wait for bank to appear
     screenshot = wincap.get_screenshot()
-    screenshot = cv.cvtColor(screenshot, cv.COLOR_BGR2GRAY)
+    screenshot = cv.cvtColor(screenshot, cv.COLOR_RGB2GRAY)
     #in_bankWindow = in_bank_vision.find(screenshot, in_bank_threshold, debug_mode='rectangles')
-    in_bankConfidence = in_bank_vision.find(screenshot, in_bank_threshold, debug_mode='rectangles', return_mode = 'confidence')
+    in_bankConfidence = in_bank_vision.find(screenshot, threshold =in_bank_threshold, debug_mode='rectangles', return_mode = 'confidence')
     if in_bankConfidence[1] < in_bank_threshold:
         print('in_bank confidence = %s | DETECTION_THRESHOLD = %s | exitting...' %(in_bankConfidence[1], in_bank_threshold))
         exit()
@@ -101,10 +101,10 @@ while True:
   
     #3 find clean herbs
     screenshot = wincap.get_screenshot()
-    screenshot = cv.cvtColor(screenshot, cv.COLOR_BGR2GRAY)
+    screenshot = cv.cvtColor(screenshot, cv.COLOR_RGB2GRAY)
     #clean_herbWindow = clean_herb_vision.find(screenshot, clean_herb_threshold, debug_mode='rectangles', return_mode = 'bestPoint')
-    clean_herbConfidence = clean_herb_vision.find(screenshot, clean_herb_threshold, debug_mode='rectangles', return_mode = 'confidence')
-    clean_herbWindowAllPoints = clean_herb_vision.find(screenshot, clean_herb_threshold, debug_mode='rectangles', return_mode = 'allPoints')
+    clean_herbConfidence = clean_herb_vision.find(screenshot, threshold =clean_herb_threshold, debug_mode='rectangles', return_mode = 'confidence')
+    clean_herbWindowAllPoints = clean_herb_vision.find(screenshot, threshold =clean_herb_threshold, debug_mode='rectangles', return_mode = 'allPoints')
     if clean_herbConfidence[1] < clean_herb_threshold:
         print('clean_herb confidence = %s | DETECTION_THRESHOLD = %s | exiting...' %(clean_herbConfidence[1], clean_herb_threshold))
         exit()
@@ -122,10 +122,10 @@ while True:
 
     #4 find dirty herbs
     screenshot = wincap.get_screenshot()
-    screenshot = cv.cvtColor(screenshot, cv.COLOR_BGR2GRAY)
+    screenshot = cv.cvtColor(screenshot, cv.COLOR_RGB2GRAY)
     #dirty_bank_herbWindow = dirty_bank_herb_vision.find(screenshot, dirty_bank_herb_threshold, debug_mode='rectangles')
-    dirty_bank_herbConfidence = dirty_herb_vision.find(screenshot, dirty_bank_herb_threshold, debug_mode='rectangles', return_mode = 'confidence')
-    dirty_bank_herbWindowAllPoints = dirty_herb_vision.find(screenshot, dirty_bank_herb_threshold, debug_mode='rectangles', return_mode = 'allPoints')
+    dirty_bank_herbConfidence = dirty_bank_herb_vision.find(screenshot, threshold = dirty_bank_herb_threshold, debug_mode='rectangles', return_mode = 'confidence')
+    dirty_bank_herbWindowAllPoints = dirty_bank_herb_vision.find(screenshot, threshold =dirty_bank_herb_threshold, debug_mode='rectangles', return_mode = 'allPoints')
     if dirty_bank_herbConfidence[1] < dirty_bank_herb_threshold:
         print('dirty_bank_herb confidence = %s | DETECTION_THRESHOLD = %s | exiting...' %(dirty_bank_herbConfidence[1], dirty_bank_herb_threshold))
         exit()
@@ -142,10 +142,10 @@ while True:
 
     #6 find bank exit
     screenshot = wincap.get_screenshot()
-    screenshot = cv.cvtColor(screenshot, cv.COLOR_BGR2GRAY)
+    screenshot = cv.cvtColor(screenshot, cv.COLOR_RGB2GRAY)
     #bank_xWindow = bank_x_vision.find(screenshot, bank_exit_threshold, debug_mode='rectangles')
-    bank_xWindowConfidence = bank_x_vision.find(screenshot, bank_exit_threshold, debug_mode='rectangles', return_mode = 'confidence')
-    bank_xWindowAllPoints = bank_x_vision.find(screenshot, bank_exit_threshold, debug_mode='rectangles', return_mode = 'allPoints')
+    bank_xWindowConfidence = bank_x_vision.find(screenshot, threshold =bank_exit_threshold, debug_mode='rectangles', return_mode = 'confidence')
+    bank_xWindowAllPoints = bank_x_vision.find(screenshot, threshold =bank_exit_threshold, debug_mode='rectangles', return_mode = 'allPoints')
     if bank_xWindowConfidence[1] < bank_exit_threshold:
         print('bank_x confidence = %s | DETECTION_THRESHOLD = %s | exiting...' %(bank_xWindowConfidence[1], bank_exit_threshold))
         exit()
@@ -159,10 +159,10 @@ while True:
 
     #8 check you're outside the bank by checking for bank entrance
     screenshot = wincap.get_screenshot()
-    screenshot = cv.cvtColor(screenshot, cv.COLOR_BGR2GRAY)
+    screenshot = cv.cvtColor(screenshot, cv.COLOR_RGB2GRAY)
     #bankWindow = bank_vision.find(screenshot, bank_entrance_threshold, debug_mode='rectangles')
-    bankWindowConfidence = bank_vision.find(screenshot, bank_entrance_threshold, debug_mode='rectangles', return_mode = 'confidence')
-    bankWindowAllPoints = bank_vision.find(screenshot, bank_entrance_threshold, debug_mode='rectangles', return_mode = 'allPoints')
+    bankWindowConfidence = bank_vision.find(screenshot, threshold =bank_entrance_threshold, debug_mode='rectangles', return_mode = 'confidence')
+    bankWindowAllPoints = bank_vision.find(screenshot, threshold =bank_entrance_threshold, debug_mode='rectangles', return_mode = 'allPoints')
     if bankWindowConfidence[1] < bank_entrance_threshold:
         print('bank entrance confidence = %s | DETECTION_THRESHOLD = %s | exiting...' %(bankWindowConfidence[1], bank_entrance_threshold))
         exit()
@@ -175,10 +175,10 @@ while True:
 
     #9 find dirty herb in inventory
     #screenshot = wincap.get_screenshot()
-    #screenshot = cv.cvtColor(screenshot, cv.COLOR_BGR2GRAY)
+    #screenshot = cv.cvtColor(screenshot, cv.COLOR_RGB2GRAY)
     #dirty_herbWindow = dirty_herb_vision.find(screenshot, dirty_herb_threshold, debug_mode='rectangles')
-    dirty_herbWindowAllPoints = dirty_herb_vision.find(screenshot, dirty_herb_threshold, debug_mode='rectangles',return_mode = 'allPoints')
-    dirty_herbConfidence = dirty_herb_vision.find(screenshot, dirty_herb_threshold, debug_mode='rectangles', return_mode = 'confidence')
+    dirty_herbWindowAllPoints = dirty_herb_vision.find(screenshot, threshold = dirty_herb_threshold, debug_mode='rectangles',return_mode = 'allPoints')
+    dirty_herbConfidence = dirty_herb_vision.find(screenshot, threshold = dirty_herb_threshold, debug_mode='rectangles', return_mode = 'confidence')
     if dirty_herbConfidence[1] < dirty_herb_threshold:
         print('dirty herb confidence = %s | DETECTION_THRESHOLD = %s | exiting...' %(dirty_herbConfidence[1], dirty_herb_threshold))
         exit()
@@ -195,7 +195,7 @@ while True:
     ''' #this part is redundant -- you check again later
     #10.5 check the herbs are clean now 
     screenshot = wincap.get_screenshot()
-    screenshot = cv.cvtColor(screenshot, cv.COLOR_BGR2GRAY)
+    screenshot = cv.cvtColor(screenshot, cv.COLOR_RGB2GRAY)
     dirty_herbWindowAllPoints = dirty_herb_vision.find(screenshot, DETECTION_THRESHOLD,debug_mode= 'rectangles', return_mode = 'allPoints')
     clean_herbWindowAllPoints = clean_herb_vision.find(screenshot, DETECTION_THRESHOLD, debug_mode='rectangles', return_mode = 'allPoints')    
     print('num clean herbs = %s/28 | num dirty herbs = %s/0' % (len(clean_herbWindowAllPoints), len(dirty_herbWindowAllPoints)))

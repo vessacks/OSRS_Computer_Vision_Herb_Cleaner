@@ -100,7 +100,7 @@ class Action:
             locus3_y = np.random.randint(round((5.5*self.stdDev)),((self.hitboxHeight - round(5.5*self.stdDev))+1))
             self.locus3 = [locus3_x,locus3_y]
 
-    def click(self,hitboxScreenCoords,speed=.5, wait= np.random.uniform(.08,.11)):
+    def click(self,hitboxScreenCoords,speed=.5, wait= (.06 + abs(np.random.uniform(0,.02)))):
         self.hitboxScreenCoords = hitboxScreenCoords
 
         #pick a locus to generate a point int
@@ -136,6 +136,7 @@ class Action:
         wind_mouse(pyautogui.position()[0], pyautogui.position()[1], self.screenClickPoint[0], self.screenClickPoint[1], speed=speed)
         time.sleep(wait)
         pyautogui.click()
+        time.sleep(wait)
         #if np.random.random() < .3: #triggered 30% of the time #update: I think this is worse than nothing so I'm commenting it out
         #    pyautogui.moveRel(np.random.randint(-5,6),np.random.randint(-5,6)) #I'm throwing this in here so that the mouse moves a little bit after clicking
         
@@ -183,3 +184,45 @@ class Action:
             #    pyautogui.moveRel(np.random.randint(-5,6)) #I'm throwing this in here so that the mouse moves a little bit after clicking
             #time.sleep(np.random.normal(.1,.02))
             return self.screenClickPoint
+
+    def rightClick(self,hitboxScreenCoords,speed=.5, wait= (.06 + abs(np.random.uniform(0,.02)))):
+        self.hitboxScreenCoords = hitboxScreenCoords
+
+        #pick a locus to generate a point int
+        locusPicker = np.random.randint(1,4)
+        if locusPicker == 1:
+            self.locusPick = self.locus1
+        if locusPicker == 2:
+            self.locusPick = self.locus2
+        if locusPicker == 3:
+            self.locusPick = self.locus3
+    
+        #generate the locus offset
+        self.x_locus_offset = np.random.randint(round(self.radius*-2), (round(self.radius*2)+1))
+        #account for the possible case of a negative y_locus_offset
+        if ((self.radius ** 2) - (self.x_locus_offset ** 2)) < 0:
+            self.y_locus_offset = np.sqrt(np.absolute((self.radius ** 2) - (self.x_locus_offset ** 2)))*-1
+        else:
+            self.y_locus_offset = np.sqrt((self.radius ** 2) - (self.x_locus_offset ** 2))
+        #calculate the point within the locus. these are hitbox coords
+        self.locusPoint = [self.locusPick[0] + self.x_locus_offset, self.locusPick[1] + self.y_locus_offset]
+
+        #randomly walk the point within the locus
+        self.x_pointWalk = np.random.normal(loc=0, scale=self.stdDev)
+        self.y_pointWalk = np.random.normal(loc=0, scale=self.stdDev)
+
+        #put this into the hitboxClickPoint
+        self.hitboxClickPoint = [self.locusPoint[0]+ self.x_pointWalk, self.locusPoint[1]+self.y_pointWalk]
+
+        #put this into the screenClickPoint
+        self.screenClickPoint = [self.hitboxClickPoint[0] + self.hitboxScreenCoords[0], self.hitboxClickPoint[1] + self.hitboxScreenCoords[1]]
+
+        #move mouse to clickpoint
+        wind_mouse(pyautogui.position()[0], pyautogui.position()[1], self.screenClickPoint[0], self.screenClickPoint[1], speed=speed)
+        time.sleep(wait)
+        pyautogui.rightClick()
+        time.sleep(wait)
+        #if np.random.random() < .3: #triggered 30% of the time #update: I think this is worse than nothing so I'm commenting it out
+        #    pyautogui.moveRel(np.random.randint(-5,6),np.random.randint(-5,6)) #I'm throwing this in here so that the mouse moves a little bit after clicking
+        
+        return self.screenClickPoint
